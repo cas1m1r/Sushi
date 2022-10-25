@@ -8,8 +8,13 @@ The code will make A Record requests for each domain, and create a dictionary of
 
 Then each of the pages will be visited, and each page will be parsed to look for "malicious" content. 
 
-![sushi_roll](https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fpluspng.com%2Fimg-png%2Fsushi-roll-png-sushi-png-image-576.png&f=1&nofb=1&ipt=6b9c82aba70fc24aef8b869cb36dacd6da60f5405b1dc80eec873b6271cc3942&ipo=images)
+![sushi_roll](https://github.com/cas1m1r/Sushi/blob/main/sushi.png?raw=true)
 
+## Organization 
+Adding a component to collect/organize the data collected each day by using sqlite. Once you do this
+it makes searching through the database much easier. For example, below you can see how you might
+find pages specifically targeting a domain by searching through the URL field:
+![sqlite](https://github.com/cas1m1r/Sushi/blob/main/rolled_up.jpg?raw=true)
 
 ## NOTES
 **Be careful using this project** as this is exploring potentially active malicious hosts. Pages will not be visited in
