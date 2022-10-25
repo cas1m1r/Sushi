@@ -14,6 +14,10 @@ it makes searching through the database much easier. For example, below you can 
 find pages specifically targeting a domain by searching through the URL field:
 ![sqlite](https://github.com/cas1m1r/Sushi/blob/main/rolled_up.jpg?raw=true)
 
+Or maybe a more interesting example:
+![banking-scammers](https://github.com/cas1m1r/Sushi/blob/main/chasebank_phishing_pages.jpg?raw=true)
+
+
 ## NOTES
 **Be careful using this project** as this is exploring potentially active malicious hosts. Pages will not be visited in
 a browser, but you would be wise to still be vigilant of how you install or run this.
