@@ -8,8 +8,6 @@ The code will make A Record requests for each domain, and create a dictionary of
 
 Then each of the pages will be visited, and each page will be parsed to look for "malicious" content. 
 
-![sushi_roll](https://github.com/cas1m1r/Sushi/blob/main/sushi.png?raw=true)
-
 ## Organization 
 Adding a component to collect/organize the data collected each day by using sqlite. Once you do this
 it makes searching through the database much easier. For example, below you can see how you might
