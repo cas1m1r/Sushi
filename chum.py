@@ -108,6 +108,8 @@ if __name__ == '__main__':
 
 	# save the results
 	print(f'{BLD}[{ld} {lt}] {GRN}FINISHED ')
-	filename = f"{'phish_food'}_{ld.replace('/','-')}_{lt.replace(':','_')}.json"
+	if not os.path.isdir(os.path.join(os.getcwd(),'data')):
+		os.mkdir('data')
+	filename = f"data/{'phish_food'}_{ld.replace('/','-')}_{lt.replace(':','_')}.json"
 	open(filename,'w').write(json.dumps(phishing_data,indent=2))
-
+	print(f'[+] Data saved to {filename}')

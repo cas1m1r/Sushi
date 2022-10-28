@@ -36,6 +36,7 @@ def process_page(website):
 	results = {}
 	try:
 		scary = requests.get(website)
+		page_data = scary.text
 	except:
 		print(f'[!] Error Processing {website}')
 		return results
@@ -52,7 +53,7 @@ def process_page(website):
 		return results
 	# Extract links
 	links = []
-	ai = [i.start() for i in re.finditer('href="', scary.text)]
+	ai = [i.start() for i in re.finditer('href="', page_data)]
 	for index in ai:
 		try:
 			links.append(bad_page.text[index:].split('>')[0].split('href=')[1])
@@ -81,14 +82,16 @@ def create_table():
 		            URL TEXT NOT NULL,
 		            LINK TEXT NOT NULL,
 		            STATUS INT NOT NULL,
-		            COOKIES TEXT NOT NULL
+		            COOKIES TEXT NOT NULL,
+		            DATE_VISITED TEXT NOT NULL
 		        ); """
 	cursor = scammers.cursor()
 	cursor.execute(create_table)
 	cursor.close()
 	save_db(scammers)
 
-def insert_row(ip, data):
+
+def insert_row(stamp, ip, data):
 	scammers = load_db()
 	cursor = scammers.cursor()
 	if len(data.keys()) > 1:
@@ -106,7 +109,7 @@ def insert_row(ip, data):
 			except:
 				links = '[]'
 				pass
-			row = f"('{ip}', '{d['url']}', '{links}', '{d['status']}', '{cookies}')"
+			row = f"('{ip}', '{d['url']}', '{links}', '{d['status']}', '{cookies}', '{stamp}')"
 			cmd = f"INSERT INTO phishing_pages VALUES {row}"
 			print(f'Trying to run SQL Command:\n{cmd}')
 			cursor.execute(cmd)		
@@ -125,7 +128,7 @@ def insert_row(ip, data):
 			links = '[]'
 			pass
 		try:
-			row = f"('{ip}', '{d['url']}', '{links}', '{d['status']}', '{cookies}')"
+			row = f"('{ip}', '{d['url']}', '{links}', '{d['status']}', '{cookies}', '{stamp}')"
 			cmd = f"INSERT INTO phishing_pages VALUES {row}"
 			print(f'Trying to run SQL Command:\n{cmd}')
 			cursor.execute(cmd)
@@ -138,10 +141,18 @@ def main():
 	if not os.path.isfile('phishers.db'):
 		create_table()
 	if len(sys.argv) > 1:
-		data = json.loads(open(sys.argv[1],'r').read())
+		fname = sys.argv[1]
+		fields = fname.split('_')
+		day = fields[2]
+		hr = '%02d' % int(fields[3])
+		mn = '%02d' % int(fields[4])
+		sc = '%02d' % int(fields[-1].split('.')[0])
+		t = f'{hr}:{mn}:{sc}'
+		stamp = f'{day} {t}'
+		data = json.loads(open(fname,'r').read())
 		for ip in data.keys():
 			entry = data[ip]
-			insert_row(ip, entry)
+			insert_row(stamp,ip, entry)
 
 if __name__ == '__main__':
 	main()
