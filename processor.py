@@ -1,3 +1,4 @@
+import base64
 import requests 
 import sqlite3
 import pandas
@@ -14,8 +15,6 @@ BLU = '\033[32m'
 YEL = '\033[33m'
 GRN = '\033[34m'
 PRP = '\033[35m'
-
-
 
 
 def create_timestamp():
@@ -46,11 +45,7 @@ def process_page(website):
 	results['status'] = scary.status_code
 	results['page_size'] = response_size
 	results['cookies'] = scary.cookies.items()
-	try:
-		scary.close()
-	except: 
-		print(f'[!] Error Processing {website}')
-		return results
+	results['content'] = base64.b64encode(bytes(page_data,'utf-8')).decode('UTF-8')
 	# Extract links
 	links = []
 	ai = [i.start() for i in re.finditer('href="', page_data)]
@@ -59,6 +54,11 @@ def process_page(website):
 			links.append(bad_page.text[index:].split('>')[0].split('href=')[1])
 		except:
 			pass
+	try:
+		scary.close()
+	except: 
+		print(f'[!] Error Processing {website}')
+		return results
 	if len(links):
 		print(f'[+] {len(links)} links found on {website}')
 	if len(results['cookies']):
@@ -100,7 +100,7 @@ def insert_row(stamp, ip, data):
 			if 'url' not in d.keys():
 				continue
 			try:
-				cookies = f"[{json.dumps(d['cookies'])}]"
+				cookies = f"[{json.dumps(d['cookies'])}]".replace("'","").replace('"','"')
 			except KeyError:
 				cookies = '[]'
 				pass
@@ -136,6 +136,23 @@ def insert_row(stamp, ip, data):
 			pass
 	cursor.close()
 	save_db(scammers)
+
+
+def search_by_url(db, url_substr):
+	c = db.cursor()
+	query = c.execute(f'SELECT * from phishing_pages WHERE URL like "%{url_substr}%"')
+	return query.fetchall()
+
+def search_by_date(db, datestr):
+	c = db.cursor()
+	query = c.execute(f'SELECT * from phishing_pages WHERE DATE_VISITED like "%{datestr}%"')
+	return query.fetchall()
+
+def search_by_status(db, code):
+	c = db.cursor()
+	query = c.execute(f'SELECT * from phishing_pages WHERE STATUS like "%{code}%"')
+	return query.fetchall()
+
 
 def main():
 	if not os.path.isfile('phishers.db'):
